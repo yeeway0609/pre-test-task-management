@@ -53,7 +53,7 @@ export function TaskList() {
       </div>
       {/* task 列表 */}
       <h1 className="text-xl font-bold my-3">Task list</h1>
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-2">
         {filteredTasks.map((task) => (
           <TaskItem key={task.id} task={task} />
         ))}
@@ -84,7 +84,7 @@ function renderTaskActions(task: Task) {
 
   return (
     <>
-      <button className="border border-black rounded-md p-1" onClick={handleStatusChange}>
+      <button className="border border-black rounded-md mr-2 p-1" onClick={handleStatusChange}>
         Change Status
       </button>
       <button className="border border-black rounded-md p-1" onClick={handleDelete}>
@@ -96,9 +96,11 @@ function renderTaskActions(task: Task) {
 
 function TaskItem({ task }: { task: Task }) {
   return (
-    <div className="flex gap-1" key={task.id}>
-      <h3 className="font-bold">{task.title}</h3>
-      <p>{task.description}</p>
+    <div className=" w-fit space-y-1 border p-3 border-gray-500 rounded-md" key={task.id}>
+      <div className="flex gap-1">
+        <h3 className="font-bold">{task.title}</h3>
+        <p>{task.description}</p>
+      </div>
       <div>
         <p>Status: {task.status}</p>
         <p>Priority: {task.priority}</p>
