@@ -63,15 +63,22 @@ export function TaskList() {
   )
 }
 
-function renderTaskActions(task: Task) {
+function TaskItem({ task }: { task: Task }) {
   const { deleteTask, updateTask } = useTasks()
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const handleDelete = () => {
     // Potential UX anti-pattern
-    const confirmDelete = window.confirm(`Delete task "${task.title}"?`)
-    if (confirmDelete) {
-      deleteTask(task.id)
-    }
+    // const confirmDelete = window.confirm(`Delete task "${task.title}"?`) // 會阻擋用戶進行其他操作
+    // if (confirmDelete) {
+    //   deleteTask(task.id)
+    // }
+    setIsModalOpen(true)
+  }
+
+  const handleConfirmDelete = () => {
+    deleteTask(task.id)
+    setIsModalOpen(false)
   }
 
   const handleStatusChange = () => {
@@ -84,20 +91,7 @@ function renderTaskActions(task: Task) {
   }
 
   return (
-    <>
-      <button className="border bg-blue-400 text-white rounded-lg mr-2 px-2 py-1" onClick={handleStatusChange}>
-        Change Status
-      </button>
-      <button className="border bg-red-500 text-white rounded-lg px-2 py-1" onClick={handleDelete}>
-        Delete
-      </button>
-    </>
-  )
-}
-
-function TaskItem({ task }: { task: Task }) {
-  return (
-    <div className=" w-fit space-y-2 border p-3 border-gray-500 rounded-md" key={task.id}>
+    <div className="w-fit border p-3 border-gray-500 rounded-md" key={task.id}>
       <div className="flex gap-1">
         <h3 className="font-bold">{task.title}</h3>
         <p>{task.description}</p>
@@ -106,7 +100,31 @@ function TaskItem({ task }: { task: Task }) {
         <p>Status: {task.status}</p>
         <p>Priority: {task.priority}</p>
       </div>
-      {renderTaskActions(task)}
+      <button className="border bg-blue-400 text-white rounded-lg mr-2 px-2 py-1" onClick={handleStatusChange}>
+        Change Status
+      </button>
+      <button className="border bg-red-500 text-white rounded-lg px-2 py-1" onClick={handleDelete}>
+        Delete
+      </button>
+
+      {/* 刪除確認彈窗 */}
+      {isModalOpen && (
+        <div className="fixed w-screen h-screen top-0 left-0 z-50 flex items-center justify-center">
+          <div className="bg-gray-500/60 m-0 absolute top-0 left-0 size-full" onClick={() => setIsModalOpen(false)} />
+
+          <div className="relative p-5 rounded-lg bg-white">
+            <p>{`Delete task "${task.title}"?`}</p>
+            <div className="mt-4 flex justify-center gap-3">
+              <button className="border rounded-lg px-2" onClick={() => setIsModalOpen(false)}>
+                no
+              </button>
+              <button className="border rounded-lg px-2" onClick={handleConfirmDelete}>
+                yes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
