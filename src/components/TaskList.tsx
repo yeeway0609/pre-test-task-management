@@ -99,8 +99,10 @@ function TaskItem({ task }: { task: Task }) {
     <div className="flex gap-1" key={task.id}>
       <h3 className="font-bold">{task.title}</h3>
       <p>{task.description}</p>
-      <p>Status: {task.status}</p>
-      <p>Priority: {task.priority}</p>
+      <div>
+        <p>Status: {task.status}</p>
+        <p>Priority: {task.priority}</p>
+      </div>
       {renderTaskActions(task)}
     </div>
   )
