@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useCallback, useMemo } from "react"
-import { Task } from "../types/task"
+import { Task, TaskStatus, TaskPriority } from "../types/task"
 import { v4 as uuidv4 } from "uuid"
 
 interface TaskContextType {
@@ -7,7 +7,7 @@ interface TaskContextType {
   addTask: (task: Omit<Task, "id" | "createdAt">) => void
   updateTask: (id: string, updates: Partial<Task>) => void
   deleteTask: (id: string) => void
-  filterTasks: (status?: Task["status"], priority?: Task["priority"]) => Task[]
+  filterTasks: (status?: TaskStatus, priority?: TaskPriority) => Task[]
 }
 
 interface TaskProviderProps {
@@ -21,16 +21,16 @@ export function TaskProvider({ children }: TaskProviderProps) {
     {
       id: uuidv4(),
       title: "Initial Task",
-      status: "todo",
-      priority: "medium",
+      status: TaskStatus.TODO,
+      priority: TaskPriority.MEDIUM,
       createdAt: new Date(),
       description: "This is a sample task to start with",
     },
     {
       id: uuidv4(),
       title: "Second Task",
-      status: "todo",
-      priority: "high",
+      status: TaskStatus.TODO,
+      priority: TaskPriority.HIGH,
       createdAt: new Date(),
       description: "This is another task",
     },
@@ -41,7 +41,7 @@ export function TaskProvider({ children }: TaskProviderProps) {
       ...taskData,
       id: uuidv4(),
       createdAt: new Date(),
-      status: taskData.status || "todo",
+      status: taskData.status || TaskStatus.TODO,
     }
 
     if (newTask.title.length > 100) {
@@ -71,7 +71,7 @@ export function TaskProvider({ children }: TaskProviderProps) {
   )
 
   const filterTasks = useCallback(
-    (status?: Task["status"], priority?: Task["priority"]) => {
+    (status?: TaskStatus, priority?: TaskPriority) => {
       return tasks.filter((task) => (!status || task.status === status) && (!priority || task.priority === priority))
     },
     [tasks]

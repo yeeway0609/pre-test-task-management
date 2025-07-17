@@ -1,12 +1,12 @@
 import { useState, useMemo } from "react"
 import { useTasks } from "../context/TaskContext"
-import { Task } from "../types/task"
+import { Task, TaskStatus, TaskPriority } from "../types/task"
 
 export function TaskList() {
   const { tasks } = useTasks()
   const [filter, setFilter] = useState<{
-    status?: Task["status"]
-    priority?: Task["priority"]
+    status?: TaskStatus
+    priority?: TaskPriority
   }>({})
 
   const filteredTasks = useMemo(() => {
@@ -26,14 +26,14 @@ export function TaskList() {
           onChange={(e) =>
             setFilter((prev) => ({
               ...prev,
-              status: e.target.value as Task["status"],
+              status: e.target.value as TaskStatus,
             }))
           }
         >
           <option value="">All Statuses</option>
-          <option value="todo">To Do</option>
-          <option value="in-progress">In Progress</option>
-          <option value="done">Done</option>
+          <option value={TaskStatus.TODO}>To Do</option>
+          <option value={TaskStatus.IN_PROGRESS}>In Progress</option>
+          <option value={TaskStatus.DONE}>Done</option>
         </select>
 
         <select
@@ -41,16 +41,17 @@ export function TaskList() {
           onChange={(e) =>
             setFilter((prev) => ({
               ...prev,
-              priority: e.target.value as Task["priority"],
+              priority: e.target.value as TaskPriority,
             }))
           }
         >
           <option value="">All Priorities</option>
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
+          <option value={TaskPriority.LOW}>Low</option>
+          <option value={TaskPriority.MEDIUM}>Medium</option>
+          <option value={TaskPriority.HIGH}>High</option>
         </select>
       </div>
+
       {/* task 列表 */}
       <h1 className="text-xl font-bold my-3">Task list</h1>
       <div className="flex flex-col gap-2">
@@ -74,10 +75,10 @@ function renderTaskActions(task: Task) {
   }
 
   const handleStatusChange = () => {
-    const statusMap: Record<Task["status"], Task["status"]> = {
-      todo: "in-progress",
-      "in-progress": "done",
-      done: "todo",
+    const statusMap: Record<TaskStatus, TaskStatus> = {
+      [TaskStatus.TODO]: TaskStatus.IN_PROGRESS,
+      [TaskStatus.IN_PROGRESS]: TaskStatus.DONE,
+      [TaskStatus.DONE]: TaskStatus.TODO,
     }
     updateTask(task.id, { status: statusMap[task.status] })
   }
