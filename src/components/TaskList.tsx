@@ -1,57 +1,20 @@
-import React, { useState, useMemo } from "react";
-import { useTasks } from "../context/TaskContext";
-import { Task } from "../types/task";
+import { useState, useMemo } from "react"
+import { useTasks } from "../context/TaskContext"
+import { Task } from "../types/task"
 
-export const TaskList: React.FC = () => {
-  const { tasks, deleteTask, updateTask } = useTasks();
+export function TaskList() {
+  const { tasks } = useTasks()
   const [filter, setFilter] = useState<{
-    status?: Task["status"];
-    priority?: Task["priority"];
-  }>({});
+    status?: Task["status"]
+    priority?: Task["priority"]
+  }>({})
 
   const filteredTasks = useMemo(() => {
     return tasks.filter(
       (task) =>
-        (!filter.status || task.status === filter.status) &&
-        (!filter.priority || task.priority === filter.priority)
-    );
-  }, [tasks, filter]);
-
-  const renderTaskActions = (task: Task) => {
-    const handleDelete = () => {
-      // Potential UX anti-pattern
-      const confirmDelete = window.confirm(`Delete task "${task.title}"?`);
-      if (confirmDelete) {
-        deleteTask(task.id);
-      }
-    };
-
-    const handleStatusChange = () => {
-      const statusMap: Record<Task["status"], Task["status"]> = {
-        todo: "in-progress",
-        "in-progress": "done",
-        done: "todo",
-      };
-      updateTask(task.id, { status: statusMap[task.status] });
-    };
-
-    return (
-      <>
-        <button
-          className="border border-black rounded-md p-1"
-          onClick={handleStatusChange}
-        >
-          Change Status
-        </button>
-        <button
-          className="border border-black rounded-md p-1"
-          onClick={handleDelete}
-        >
-          Delete
-        </button>
-      </>
-    );
-  };
+        (!filter.status || task.status === filter.status) && (!filter.priority || task.priority === filter.priority)
+    )
+  }, [tasks, filter])
 
   return (
     <div>
@@ -92,15 +55,53 @@ export const TaskList: React.FC = () => {
       <h1 className="text-xl font-bold my-3">Task list</h1>
       <div className="flex flex-col">
         {filteredTasks.map((task) => (
-          <div className="flex gap-1" key={task.id}>
-            <h3 className="font-bold">{task.title}</h3>
-            <p>{task.description}</p>
-            <p>Status: {task.status}</p>
-            <p>Priority: {task.priority}</p>
-            {renderTaskActions(task)}
-          </div>
+          <TaskItem key={task.id} task={task} />
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
+
+function renderTaskActions(task: Task) {
+  const { deleteTask, updateTask } = useTasks()
+
+  const handleDelete = () => {
+    // Potential UX anti-pattern
+    const confirmDelete = window.confirm(`Delete task "${task.title}"?`)
+    if (confirmDelete) {
+      deleteTask(task.id)
+    }
+  }
+
+  const handleStatusChange = () => {
+    const statusMap: Record<Task["status"], Task["status"]> = {
+      todo: "in-progress",
+      "in-progress": "done",
+      done: "todo",
+    }
+    updateTask(task.id, { status: statusMap[task.status] })
+  }
+
+  return (
+    <>
+      <button className="border border-black rounded-md p-1" onClick={handleStatusChange}>
+        Change Status
+      </button>
+      <button className="border border-black rounded-md p-1" onClick={handleDelete}>
+        Delete
+      </button>
+    </>
+  )
+}
+
+function TaskItem({ task }: { task: Task }) {
+  return (
+    <div className="flex gap-1" key={task.id}>
+      <h3 className="font-bold">{task.title}</h3>
+      <p>{task.description}</p>
+      <p>Status: {task.status}</p>
+      <p>Priority: {task.priority}</p>
+      {renderTaskActions(task)}
+    </div>
+  )
+}
