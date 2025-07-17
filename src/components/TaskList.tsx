@@ -85,10 +85,10 @@ function renderTaskActions(task: Task) {
 
   return (
     <>
-      <button className="border border-black rounded-md mr-2 p-1" onClick={handleStatusChange}>
+      <button className="border bg-blue-400 text-white rounded-lg mr-2 px-2 py-1" onClick={handleStatusChange}>
         Change Status
       </button>
-      <button className="border border-black rounded-md p-1" onClick={handleDelete}>
+      <button className="border bg-red-500 text-white rounded-lg px-2 py-1" onClick={handleDelete}>
         Delete
       </button>
     </>
@@ -97,7 +97,7 @@ function renderTaskActions(task: Task) {
 
 function TaskItem({ task }: { task: Task }) {
   return (
-    <div className=" w-fit space-y-1 border p-3 border-gray-500 rounded-md" key={task.id}>
+    <div className=" w-fit space-y-2 border p-3 border-gray-500 rounded-md" key={task.id}>
       <div className="flex gap-1">
         <h3 className="font-bold">{task.title}</h3>
         <p>{task.description}</p>
